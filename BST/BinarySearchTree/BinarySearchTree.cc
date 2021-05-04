@@ -60,6 +60,7 @@ public:
         if (fast->value == key)
         {
           cout << "Duplicate value, not added" << endl;
+          return; 
         }
         else
         {
@@ -189,6 +190,22 @@ public:
     return temp->value;
   }
 
+  int findMax(int a, int b){
+  if(a >= b)
+    return a;
+  else
+    return b;
+}
+
+int findHeight(TreeNode *start){
+  // Base case:
+  if(start == NULL) {
+    return 0; 
+  }
+    
+  return findMax(findHeight(start->left), findHeight(start->right)) + 1;
+}
+
   void inorder(TreeNode *start)
   {
     if (start == NULL)
@@ -240,15 +257,16 @@ int main()
   while (choice < 7)
   {
     cout << endl;
-    cout << "==================================" << endl;
+    cout << "========================================" << endl;
     cout << "Press 1 to add a number to the BST" << endl;
     cout << "Press 2 to search for a number" << endl;
     cout << "Press 3 to delete a number" << endl;
     cout << "Press 4 for in-order display" << endl;
     cout << "Press 5 for pre-order display" << endl;
     cout << "Press 6 for post-order display" << endl;
+    cout << "Press 7 to find the height of the tree" << endl; 
     cout << "Press any other button to quit" << endl;
-    cout << "==================================" << endl;
+    cout << "========================================" << endl; 
     cin >> choice;
 
     switch (choice)
@@ -257,7 +275,6 @@ int main()
       cout << "Add what?" << endl;
       cin >> value;
       myTree.addNode(value);
-      cout << "Added " << value << endl;
       break;
     case 2:
       cout << "What number are you looking for?" << endl;
@@ -278,6 +295,11 @@ int main()
     case 6:
       myTree.postorder(myTree.root);
       break;
+    case 7:
+      cout << "Height is: "; 
+      myTree.findHeight(myTree.root); 
+      cout << endl; 
+      break; 
     default:
       return 0;
     }
