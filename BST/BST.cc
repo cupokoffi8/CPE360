@@ -315,6 +315,23 @@ void clearTree(TreeNode *start) {
 
 int main() {
 
+  //Adding initial values to speed up testing 
+  myTree.addNode(50); 
+  myTree.addNode(25);
+  myTree.addNode(75);
+  myTree.addNode(20);
+  myTree.addNode(30);
+  
+  /* Initial tree should look like: 
+
+                [50]
+                /  \
+            [25]    [75]
+            /  \    
+        [20]    [30]
+
+  */ 
+
   BST myTree;
   int choice, value;
 
@@ -399,7 +416,7 @@ int main() {
       break; 
 
     default :
-      exit(1);
+      return 0; 
     }
   }
 }
