@@ -349,7 +349,7 @@ int main() {
     cout << "Press 8 to show the minimum value in the tree" << endl; 
     cout << "Press 9 to show the maximum value in the tree" << endl; 
     cout << "Press 10 to check if the tree is balanced" << endl; 
-    cout << "Anything other number to quit" << endl; 
+    cout << "Any other number to quit" << endl; 
     cout << "===============================================" << endl;
     cout << endl; 
     cin >> choice;
