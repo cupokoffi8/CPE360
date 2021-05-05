@@ -113,32 +113,21 @@ int findHeight(TreeNode *root){
       TreeNode *fast, *slow;
       fast = slow = start;
 
-      while (fast != NULL || fast->data != key)
+      while (fast != NULL && fast->data != key)
       {
-        if (fast->data == key)
-        {
-          found = true;
-          break;
+        if(key < fast->data) {
+          slow = fast; 
+          fast = fast->left; 
         }
-        else
-        {
-          if (key > fast->data)
-          {
-            slow = fast;
-            fast = fast->right;
-          }
-          else
-          {
-            slow = fast;
-            fast = fast->left;
-          }
+        else {
+          slow = fast; 
+          fast = fast->right; 
         }
       }
-      if (fast == NULL)
-      {
-        cout << "Value not found in tree" << endl;
-        return;
-      }
+
+      if(fast == NULL) {  //11241147843
+				cout << key << " does not exist in this tree" << endl;
+			}
       else
       {
         //Case 1. has no children
@@ -341,7 +330,7 @@ int main() {
 
   int choice, value;
 
-  while(choice < 11) {
+  while(1) {
     cout << endl; 
     cout << "==============================================" << endl; 
     cout << "Press 0 to delete the whole tree" << endl; 
@@ -423,7 +412,7 @@ int main() {
       break; 
 
     default :
-      return 0; 
+      exit(1); 
     }
   }
 }
