@@ -227,6 +227,40 @@ int findHeight(TreeNode *root){
       } 
     return(temp->data); 
   } 
+
+  bool isBalanced(TreeNode *root){
+		int left_height;
+		int right_height;
+		
+		if (root == NULL)
+			return 1;
+		left_height = findHeight(root->left);
+		right_height = findHeight(root->right);
+
+		if (abs(left_height - right_height) <= 2)	{
+			cout<<"Tree is balanced"<<endl;			
+			return 1;
+		}
+		else{
+		cout<<"Tree is not balanced!"<<endl;		
+		return 0; //Tree is not balanced
+		}
+  }
+
+void clearTree(TreeNode *start) {
+    if(start == NULL) {
+      return;
+    }
+    else {
+      //LEFT
+      clearTree(start->left);
+      //RIGHT
+      clearTree(start->right);
+
+      delete start; 
+    }
+  }
+
     
   //4. Function(s) to display
   //4.1 preorder
@@ -284,8 +318,9 @@ int main() {
   BST myTree;
   int choice, value;
 
-  while(1) {
+  while(choice < 11) {
     cout << "==============================================" << endl; 
+    cout << "Press 0 to delete the whole tree" << endl; 
     cout << "Press 1 to add a value" << endl;
     cout << "Press 2 to pre-order" << endl;
     cout << "Press 3 to post-order" << endl;
@@ -295,12 +330,19 @@ int main() {
     cout << "Press 7 to show tree height" << endl; 
     cout << "Press 8 to show the minimum value in the tree" << endl; 
     cout << "Press 9 to show the maximum value in the tree" << endl; 
+    cout << "Press 10 to check if the tree is balanced" << endl; 
     cout << "Anything else to quit" << endl; 
     cout << "===============================================" << endl;
     cout << endl; 
     cin >> choice;
 
     switch(choice) {
+    case 0: 
+      cout << "Deleting the whole tree" << endl; 
+      myTree.clearTree(myTree.root); 
+      myTree.root = NULL; 
+      break; 
+
     case 1:
       cout << "What value?" << endl;
       cin >> value;
@@ -350,6 +392,10 @@ int main() {
     case 9: 
       cout << "Maximum value is: "; 
       cout << myTree.maxValue(myTree.root) << endl; 
+      break; 
+
+    case 10: 
+      myTree.isBalanced(myTree.root); 
       break; 
 
     default :
