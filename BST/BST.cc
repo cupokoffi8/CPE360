@@ -232,8 +232,11 @@ int findHeight(TreeNode *root){
 		int left_height;
 		int right_height;
 		
-		if (root == NULL)
-			return 1;
+		if (root == NULL) {
+      cout << "Tree is empty" << endl; 
+      return 1;
+    }
+
 		left_height = findHeight(root->left);
 		right_height = findHeight(root->right);
 
