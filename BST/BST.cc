@@ -228,13 +228,14 @@ int findHeight(TreeNode *root){
     return(temp->data); 
   } 
 
+  //Check if tree is balanced with height tolerance of +/-2
   bool isBalanced(TreeNode *root){
 		int left_height;
 		int right_height;
 		
 		if (root == NULL) {
       cout << "Tree is empty" << endl; 
-      return 1;
+      return 1; //Empty tree
     }
 
 		left_height = findHeight(root->left);
@@ -242,7 +243,7 @@ int findHeight(TreeNode *root){
 
 		if (abs(left_height - right_height) <= 2)	{
 			cout<<"Tree is balanced"<<endl;			
-			return 1;
+			return 1; //Tree is balanced
 		}
 		else{
 		cout<<"Tree is not balanced!"<<endl;		
@@ -250,7 +251,8 @@ int findHeight(TreeNode *root){
 		}
   }
 
-void clearTree(TreeNode *start) {
+  //Deletes the entire tree 
+  void clearTree(TreeNode *start) {
     if(start == NULL) {
       return;
     }
@@ -261,7 +263,7 @@ void clearTree(TreeNode *start) {
       clearTree(start->right);
 
       delete start; 
-    }
+      }
   }
 
     
