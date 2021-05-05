@@ -315,13 +315,15 @@ void clearTree(TreeNode *start) {
 
 int main() {
 
+  BST myTree;
+
   //Adding initial values to speed up testing 
   myTree.addNode(50); 
   myTree.addNode(25);
   myTree.addNode(75);
   myTree.addNode(20);
   myTree.addNode(30);
-  
+
   /* Initial tree should look like: 
 
                 [50]
@@ -332,7 +334,6 @@ int main() {
 
   */ 
 
-  BST myTree;
   int choice, value;
 
   while(choice < 11) {
@@ -348,7 +349,7 @@ int main() {
     cout << "Press 8 to show the minimum value in the tree" << endl; 
     cout << "Press 9 to show the maximum value in the tree" << endl; 
     cout << "Press 10 to check if the tree is balanced" << endl; 
-    cout << "Anything else to quit" << endl; 
+    cout << "Anything other number to quit" << endl; 
     cout << "===============================================" << endl;
     cout << endl; 
     cin >> choice;
