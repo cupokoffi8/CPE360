@@ -1,5 +1,6 @@
 #include <iostream>
 #include <stdlib.h>
+#include <list>
 using namespace std;
 
 class TreeNode
@@ -95,6 +96,7 @@ public:
     if (start->value == NULL)
     {
       cout << "Tree is empty";
+      return; 
     }
     else
     {
@@ -190,20 +192,18 @@ public:
     return temp->value;
   }
 
-  int findMax(int a, int b){
+int findMax(int a, int b){
   if(a >= b)
-    return a;
+    {return a;}
   else
-    return b;
+    {return b;}
 }
 
-int findHeight(TreeNode *start){
-  // Base case:
-  if(start == NULL) {
-    return 0; 
-  }
-    
-  return findMax(findHeight(start->left), findHeight(start->right)) + 1;
+int findHeight(TreeNode *root){
+  
+  if(root == NULL){return 0;}
+
+  return findMax(findHeight(root->left), findHeight(root->right)) + 1;
 }
 
   void inorder(TreeNode *start)
@@ -254,7 +254,7 @@ int main()
   BST myTree;
   int choice, value;
   value = choice = 0;
-  while (choice < 7)
+  while (choice < 8)
   {
     cout << endl;
     cout << "========================================" << endl;
@@ -297,7 +297,7 @@ int main()
       break;
     case 7:
       cout << "Height is: "; 
-      myTree.findHeight(myTree.root); 
+      cout << myTree.findHeight(myTree.root); 
       cout << endl; 
       break; 
     default:

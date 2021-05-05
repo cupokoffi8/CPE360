@@ -85,98 +85,147 @@ public:
       }
     }
   }
+
+int findMax(int a, int b){
+  if(a >= b)
+    {return a;}
+  else
+    {return b;}
+}
+
+int findHeight(TreeNode *root){
   
-  //3. Delete a value from the BST
-  void deleteNode(int value, TreeNode *start) {
+  if(root == NULL){return 0;}
 
-    TreeNode *fast; 
-    TreeNode *slow; 
+  return findMax(findHeight(root->left), findHeight(root->right)) + 1;
+}
+  
+  void deleteNode(int key, TreeNode *start)
+  {
+    bool found = false;
+    if (start->data == NULL)
+    {
+      cout << "Tree is empty";
+      return; 
+    }
+    else
+    {
+      TreeNode *fast, *slow;
+      fast = slow = start;
 
-    if(start == NULL) {
-      cout << "Empty tree, nothing to delete." << endl;
-      return;
+      while (fast != NULL || fast->data != key)
+      {
+        if (fast->data == key)
+        {
+          found = true;
+          break;
+        }
+        else
+        {
+          if (key > fast->data)
+          {
+            slow = fast;
+            fast = fast->right;
+          }
+          else
+          {
+            slow = fast;
+            fast = fast->left;
+          }
+        }
+      }
+      if (fast == NULL)
+      {
+        cout << "Value not found in tree" << endl;
+        return;
+      }
+      else
+      {
+        //Case 1. has no children
+        if (fast->left == NULL && fast->right == NULL)
+        {
+          if (slow->left == fast)
+          {
+            delete fast;
+            slow->left = NULL;
+          }
+          else
+          {
+            delete fast;
+            slow->right = NULL;
+          }
+        }
+        //Case 2. has one child
+        else if (fast->left == NULL || fast->right == NULL)
+        {
+          if (slow->right == fast)
+          {
+            if (fast->left == NULL)
+            {
+              slow->right = fast->right;
+            }
+            else
+            {
+              slow->right = fast->left;
+            }
+          }
+          else
+          {
+            if (fast->left == NULL)
+            {
+              slow->left = fast->right;
+            }
+            else
+            {
+              slow->left = fast->left;
+            }
+          }
+        }
+        //Case 3. has two children
+        else
+        {
+          int minVal = minValRSubTree(fast->right);
+          deleteNode(minVal, fast);
+          fast->data = minVal;
+        }
+      }
     }
-
-    slow = fast = start;
-
-    while(fast != NULL && fast->data != value) {
-      if(value < fast->data) {
-	slow = fast;
-	fast = fast->left;
-      }
-      else {
-	slow = fast;
-	fast = fast->right;
-      }
-    }
-
-    if(fast == NULL) {
-      cout << "Value not found, cannot delete." << endl;
-      return;
-    }
-    
-    //Case 1: Node has no children
-    if(fast->left == NULL && fast->right == NULL) {
-      if(slow->left == fast) {
-	slow->left = NULL;
-	cout << "About to delete: " << fast->data << endl; 
-	delete fast; 
-      }
-      else {
-	slow->right = NULL;
-	cout << "About to delete: " << fast->data << endl; 
-	delete fast;
-      }
-    }
-    
-    //Case 2: Node has one child
-    else if(fast->left != NULL && fast->right == NULL) {
-      if(slow->left == fast) {
-	slow->left = fast->left;
-	cout << "About to delete: " << fast->data << endl; 
-	delete fast; 
-      }
-      else {
-	slow->right = fast->left;
-	cout << "About to delete: " << fast->data << endl; 
-	delete fast;
-      }
-    }
-
-    else if(fast->left == NULL && fast->right != NULL) {
-      if(slow->right == fast) {
-	slow->right = fast->left;
-	cout << "About to delete: " << fast->data << endl; 
-	delete fast; 
-      }
-      else {
-	slow->left = fast->left;
-	cout << "About to delete: " << fast->data << endl; 
-	delete fast;
-      }
-    } 
-    else {
-      
-      int minVal = minValueRightSubtree(fast->right); 
-      //Swap the current node with minval 
-      fast->data = minVal; 
-      //We need to delete that minVal from the right subtree right away! 
-      deleteNode(minVal, fast->right); 
-    }
-     //Case 3: Node has two children 
   }
-    
-  int minValueRightSubtree(TreeNode *start) {
-    if(start == NULL) {
-      return -1; 
-    } 
-    else {
-      TreeNode *temp = start; 
-      while(temp->left != NULL) {
-	temp = temp->left; 
-      }
-      return temp->data; 
+
+  int minValRSubTree(TreeNode *start)
+  {
+    TreeNode *temp = start;
+    while (temp->left != NULL)
+    {
+      temp = temp->left;
     }
+    return temp->data;
+  }
+
+  //Returns minimum value 
+  int minValue(TreeNode *start) 
+    { 
+    TreeNode *temp = start; 
+  
+
+    while (temp->left != NULL) 
+      { 
+        temp = temp->left; 
+      } 
+    return(temp->data); 
+  } 
+
+  //Returns maximum value 
+  int maxValue(TreeNode *start) 
+    { 
+    TreeNode *temp = start; 
+  
+
+    while (temp->right != NULL) 
+      { 
+        temp = temp->right; 
+      } 
+    return(temp->data); 
   } 
     
   //4. Function(s) to display
@@ -189,7 +238,7 @@ public:
     else {
       //recursive step
       //ROOT
-      cout << "^" << start->data;
+      cout << "[" << start->data << "]";
       //LEFT
       preorder(start->left);
       //RIGHT
@@ -208,7 +257,7 @@ public:
       //RIGHT
       postorder(start->right);
       //ROOT
-      cout << start->data << "^";
+      cout << "[" << start->data << "]";
     }
 
   }
@@ -221,7 +270,7 @@ public:
       //LEFT
       inorder(start->left);
       //ROOT
-      cout << "^" << start->data;
+      cout << "[" << start->data << "]";
       //RIGHT
       inorder(start->right);
     }
@@ -236,13 +285,19 @@ int main() {
   int choice, value;
 
   while(1) {
+    cout << "==============================================" << endl; 
     cout << "Press 1 to add a value" << endl;
     cout << "Press 2 to pre-order" << endl;
     cout << "Press 3 to post-order" << endl;
     cout << "Press 4 to in-order" << endl;
     cout << "Press 5 to search" << endl;
     cout << "Press 6 to delete" << endl; 
+    cout << "Press 7 to show tree height" << endl; 
+    cout << "Press 8 to show the minimum value in the tree" << endl; 
+    cout << "Press 9 to show the maximum value in the tree" << endl; 
     cout << "Anything else to quit" << endl; 
+    cout << "===============================================" << endl;
+    cout << endl; 
     cin >> choice;
 
     switch(choice) {
@@ -253,21 +308,21 @@ int main() {
       break;
 
     case 2:
-      cout << "========================" << endl;
+      cout << "==============================================" << endl;
       myTree.preorder(myTree.root);
-      cout << endl << "========================" << endl;
+      cout << endl << "==============================================" << endl;
       break;
 
     case 3:
-      cout << "========================" << endl;
+      cout << "==============================================" << endl;
       myTree.postorder(myTree.root);
-      cout << endl << "========================" << endl;
+      cout << endl << "==============================================" << endl;
       break;
 
     case 4:
-      cout << "========================" << endl;
+      cout << "==============================================" << endl;
       myTree.inorder(myTree.root);
-      cout << endl << "========================" << endl;
+      cout << endl << "==============================================" << endl;
       break;
 
     case 5:
@@ -280,6 +335,21 @@ int main() {
       cout << "What value?" << endl;
       cin >> value;
       myTree.deleteNode(value, myTree.root);
+      break; 
+
+    case 7:
+      cout << "Height is: "; 
+      cout << myTree.findHeight(myTree.root) << endl; 
+      break; 
+
+    case 8: 
+      cout << "Minimum value is: "; 
+      cout << myTree.minValue(myTree.root) << endl; 
+      break; 
+
+    case 9: 
+      cout << "Maximum value is: "; 
+      cout << myTree.maxValue(myTree.root) << endl; 
       break; 
 
     default :
