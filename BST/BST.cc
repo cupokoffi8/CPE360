@@ -103,9 +103,9 @@ int findHeight(TreeNode *root){
   void deleteNode(int key, TreeNode *start)
   {
     bool found = false;
-    if (start->data == NULL)
+    if(start == NULL)
     {
-      cout << "Tree is empty";
+      cout << "Tree is empty" << endl; 
       return; 
     }
     else
@@ -337,6 +337,7 @@ int main() {
   int choice, value;
 
   while(choice < 11) {
+    cout << endl; 
     cout << "==============================================" << endl; 
     cout << "Press 0 to delete the whole tree" << endl; 
     cout << "Press 1 to add a value" << endl;
