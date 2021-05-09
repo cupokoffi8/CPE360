@@ -34,6 +34,7 @@ public:
   int max_wait_time;
   int min_service_time;
   int max_service_time;
+  int serviceWaitTime; 
 
   Queue()
   {
@@ -43,13 +44,15 @@ public:
     min_wait_time = 99999;
     max_wait_time = -1;
     min_service_time = 99999;
-    max_service_time = -1;
+    max_service_time = -1; 
+    int serviceWaitTime = 0; 
   }
 
   void enqueue()
   {
     Customer *temp = new Customer();
     cout << "New customer at " << storeClock / 60 << " hours and wait time " << temp->waitTime << " minutes " << endl;
+    serviceWaitTime = temp->waitTime; 
     wait_time_sum += temp->waitTime; 
     if(min_wait_time > temp->waitTime) {
       min_wait_time = temp->waitTime; 
@@ -86,7 +89,7 @@ public:
       Customer *temp;
       temp = head;       //grab the address of the first chunk
       head = head->next; //head moves to the next chunk
-      cout << "At hour " << storeClock / 60 << " we have a departing customer" << endl;
+      cout << "At hour " << storeClock / 60 << " order has been placed" << endl;
       delete temp;
     }
   }
@@ -104,7 +107,7 @@ int main()
   srand(time(NULL));
 
   float customerCount = 0;
-  int queue_length = 0;
+  int queue_length = 0; 
   int random_number;
 
   while (storeClock < 1020)
@@ -256,17 +259,16 @@ int main()
     {
       if (myStore.head->waitTime == 1)
       {
-        cout << "Customer ordering at hour " << storeClock/60; 
         myStore.head->orderTime = rand() % 6 + 1; 
-        cout << " with order time " << myStore.head->orderTime << " minutes" << endl; 
+        cout << "with order prep time " << myStore.head->orderTime << " minutes" << endl; 
         myStore.service_time_sum+=myStore.head->orderTime; 
-        if(myStore.min_service_time > myStore.head->orderTime) {
-          myStore.min_service_time = myStore.head->orderTime; 
-        } else if(myStore.max_service_time < myStore.head->orderTime) {
-          myStore.max_service_time = myStore.head->orderTime; 
+        if(myStore.min_service_time > myStore.head->orderTime+myStore.serviceWaitTime) {
+          myStore.min_service_time = myStore.head->orderTime+myStore.serviceWaitTime; 
+        } else if(myStore.max_service_time < myStore.head->orderTime+myStore.serviceWaitTime) {
+          myStore.max_service_time = myStore.head->orderTime+myStore.serviceWaitTime; 
         }
         storeClock+=myStore.head->orderTime; 
-          myStore.dequeue();
+        myStore.dequeue();
           }
       else
       {
