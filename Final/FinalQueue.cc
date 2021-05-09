@@ -280,7 +280,7 @@ int main()
   float mean_wait_time; 
   float mean_service_time; 
   mean_wait_time = myStore.wait_time_sum/customerCount; 
-  mean_service_time = myStore.service_time_sum/customerCount; 
+  mean_service_time = (myStore.service_time_sum+myStore.wait_time_sum)/customerCount; 
 
   cout << endl; 
   cout << "==========================================" << endl; 
