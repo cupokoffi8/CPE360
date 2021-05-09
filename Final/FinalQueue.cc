@@ -18,8 +18,8 @@ public:
   {
     inTime = storeClock;
     outTime = 0;
-    waitTime = 0;
-    orderTime = rand() % 6 + 1;
+    waitTime = rand() % 6 + 1;
+    orderTime = 0;
     next = NULL;
   }
 };
@@ -28,16 +28,34 @@ class Queue
 {
 public:
   Customer *head;
+  float wait_time_sum;
+  int service_time_sum;
+  int min_wait_time;
+  int max_wait_time;
+  int min_service_time;
+  int max_service_time;
 
   Queue()
   {
     head = NULL;
+    wait_time_sum = 0;
+    service_time_sum = 0;
+    min_wait_time = 99999;
+    max_wait_time = -1;
+    min_service_time = 99999;
+    max_service_time = -1;
   }
 
   void enqueue()
   {
     Customer *temp = new Customer();
-    cout << "New customer at " << storeClock / 60 << " hours and order time " << temp->orderTime << " minutes " << endl;
+    cout << "New customer at " << storeClock / 60 << " hours and wait time " << temp->waitTime << " minutes " << endl;
+    wait_time_sum += temp->waitTime; 
+    if(min_wait_time > temp->waitTime) {
+      min_wait_time = temp->waitTime; 
+    } else if(max_wait_time < temp->waitTime) {
+      max_wait_time = temp->waitTime; 
+    }
 
     if (head == NULL)
     {
@@ -85,14 +103,8 @@ int main()
   Queue myStore;
   srand(time(NULL));
 
-  int customerCount = 0;
+  float customerCount = 0;
   int queue_length = 0;
-  int wait_time_sum = 0;
-  int service_time_sum = 0;
-  int min_wait_time = 99999;
-  int max_wait_time = -1;
-  int min_service_time = 99999;
-  int max_service_time = -1;
   int random_number;
 
   while (storeClock < 1020)
@@ -107,7 +119,6 @@ int main()
       if (random_number <= 30)
       {
         //New customer arrival
-        cout << "New customer at hour " << storeClock / 60 << endl;
         customerCount++;
         myStore.enqueue();
       }
@@ -128,7 +139,6 @@ int main()
       if (random_number <= 10)
       {
         //New customer arrival
-        cout << "New customer at hour " << storeClock / 60 << endl;
         customerCount++;
         myStore.enqueue();
       }
@@ -149,7 +159,6 @@ int main()
       if (random_number <= 40)
       {
         //New customer arrival
-        cout << "New customer at hour " << storeClock / 60 << endl;
         customerCount++;
         myStore.enqueue();
       }
@@ -170,7 +179,6 @@ int main()
       if (random_number <= 10)
       {
         //New customer arrival
-        cout << "New customer at hour " << storeClock / 60 << endl;
         customerCount++;
         myStore.enqueue();
       }
@@ -191,7 +199,6 @@ int main()
       if (random_number <= 25)
       {
         //New customer arrival
-        cout << "New customer at hour " << storeClock / 60 << endl;
         customerCount++;
         myStore.enqueue();
       }
@@ -212,7 +219,6 @@ int main()
       if (random_number <= 20)
       {
         //New customer arrival
-        cout << "New customer at hour " << storeClock / 60 << endl;
         customerCount++;
         myStore.enqueue();
       }
@@ -233,7 +239,6 @@ int main()
       if (random_number <= 10)
       {
         //New customer arrival
-        cout << "New customer at hour " << storeClock / 60 << endl;
         customerCount++;
         myStore.enqueue();
       }
@@ -249,16 +254,45 @@ int main()
     //2. Is a new customer done with an order this minute?
     if (myStore.head != NULL)
     {
-      if (myStore.head->orderTime == 0)
+      if (myStore.head->waitTime == 1)
       {
-        cout << "Customer departing" << endl;
-      }
+        cout << "Customer ordering at hour " << storeClock/60; 
+        myStore.head->orderTime = rand() % 6 + 1; 
+        cout << " with order time " << myStore.head->orderTime << " minutes" << endl; 
+        myStore.service_time_sum+=myStore.head->orderTime; 
+        if(myStore.min_service_time > myStore.head->orderTime) {
+          myStore.min_service_time = myStore.head->orderTime; 
+        } else if(myStore.max_service_time < myStore.head->orderTime) {
+          myStore.max_service_time = myStore.head->orderTime; 
+        }
+        storeClock+=myStore.head->orderTime; 
+          myStore.dequeue();
+          }
       else
       {
-        myStore.head->orderTime--;
+        myStore.head->waitTime--;
       }
     }
 
     //3. Let's check on our vital stats real quick: wait time, service time and queue length
   }
+
+  float mean_wait_time; 
+  float mean_service_time; 
+  mean_wait_time = myStore.wait_time_sum/customerCount; 
+  mean_service_time = myStore.service_time_sum/customerCount; 
+
+  cout << endl; 
+  cout << "==========================================" << endl; 
+  cout << "Total wait time: " << myStore.wait_time_sum << endl; 
+  cout << "Total service time: " << myStore.service_time_sum << endl; 
+  cout << "Total customer count: " << customerCount << endl; 
+  cout << "Average wait time: " << mean_wait_time << " minutes" << endl; 
+  cout << "Average service time: " << mean_service_time << " minutes" << endl; 
+  cout << "Minimum wait time: " << myStore.min_wait_time << " minutes" << endl; 
+  cout << "Maximum wait time: " << myStore.max_wait_time << " minutes" << endl; 
+  cout << "Minimum service time: " << myStore.min_service_time << " minutes" << endl; 
+  cout << "Maximum service time: " << myStore.max_service_time << " minutes" << endl; 
+  cout << "==========================================" << endl; 
+  cout << endl; 
 }
