@@ -104,7 +104,7 @@ public:
   {
     return 1;
   }
-};
+}; 
 
 int main()
 {
@@ -380,6 +380,8 @@ int main()
 
     //3. Let's check on our vital stats real quick: wait time, service time and queue length
   }
+
+  cout << "Store now closing, goodbye!" << endl; 
 
   float mean_wait_time; 
   float mean_service_time; 
