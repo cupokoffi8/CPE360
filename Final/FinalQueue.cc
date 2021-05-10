@@ -108,23 +108,35 @@ public:
 
 int main()
 {
-
-  Queue myStore;
   srand(time(NULL));
+  Queue myStore; 
+  int choice; 
 
-  float customerCount = 0;
-  int queue_length = 0; 
-  int queue_length_count = 0; 
-  int queue_length_sum = 0; 
-  int max_queue_length = -1; 
-  int min_queue_length = 99999; 
-  float max_queue_time = 0; 
-  float min_queue_time = 0; 
-  float max_service_clock = 0; 
-  float min_service_clock = 0; 
-  int random_number;
+  while(1) {
+    cout << "================================================" << endl; 
+    cout << "Press 1 to simulate a workday at Burger King" << endl;
+	  cout << "Press anything else to quit" << endl; 
+    cout << "================================================" << endl; 
+    cin >> choice;
 
-  while (storeClock < 1020)
+    switch(choice) {
+    default :
+      cout << "Goodbye!" << endl; 
+      exit(1);
+    case 1 :
+      storeClock = 0; 
+      float customerCount = 0;
+      int queue_length = 0; 
+      int queue_length_count = 0; 
+      int queue_length_sum = 0; 
+      int max_queue_length = -1; 
+      int min_queue_length = 99999; 
+      float max_queue_time = 0; 
+      float min_queue_time = 0; 
+      float max_service_clock = 0; 
+      float min_service_clock = 0; 
+      int random_number; 
+      while (storeClock < 1020)
   {
     storeClock++;
 
@@ -407,4 +419,6 @@ int main()
   cout << "Minimum queue length: " << min_queue_length << " at " << min_queue_time << " minutes" << endl; 
   cout << "================================================" << endl; 
   cout << endl; 
+    } 
+  }    
 }
