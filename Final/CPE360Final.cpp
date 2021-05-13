@@ -3,7 +3,7 @@
 #include<time.h>
 using namespace std;
 const int DAY = 1020; //a work day is 17 hours. 17 hours * 60 minutes is 1020 minutes in a day
-float storeClock, orderTime, orderTimeSum, waitSum, waitAvg, serviceSum, serviceAvg, queueCount, queueSum, queueAvg, waitBest, serviceBest, queueBest, waitWorst, serviceWorst, queueWorst, waitBestTime, serviceBestTime, queueBestTime, waitWorstTime, serviceWorstTime, queueWorstTime;
+float storeClock, orderTime, orderTimeSum, waitSum, waitAvg, serviceTime, serviceSum, serviceAvg, queueCount, queueSum, queueAvg, waitBest, serviceBest, queueBest, waitWorst, serviceWorst, queueWorst, waitBestTime, serviceBestTime, queueBestTime, waitWorstTime, serviceWorstTime, queueWorstTime;
 bool emptyLine = true, singleLine = false; 
 
 int customerCount = 0; 
@@ -11,13 +11,13 @@ int customerCount = 0;
 class Customer
 {
 public:
-	int order, waitTime, serviceTime; //track wait time and service time, use before customer leaves
+	int order, waitTime; //track wait time and service time, use before customer leaves 
 	Customer *next;
 
 	Customer()
 	{
 		order = rand() % 6 + 1; 
-		waitTime = serviceTime = 0;
+		waitTime = 0;
 		next = NULL;
 	}
 };
@@ -25,25 +25,25 @@ public:
 class QueueLine //QueueLines follow FIFO order. elements must be added and removed from opposite sides.
 {
 public:
-	Customer * back;
+	Customer * head;
 
 	QueueLine()
 	{
-		back = NULL;
+		head = NULL;
 	}
 
-	//1: add to back
+	//1: add to head
 	void enqueue()
 	{
 		Customer *temp = new Customer; 
 		customerCount++; 
 
-		if (back == NULL) //if empty, our Customer becomes the new back Customer
-			back = temp;
+		if (head == NULL) //if empty, our Customer becomes the new head Customer
+			head = temp;
 		else
 		{
-			temp->next = back;
-			back = temp;
+			temp->next = head;
+			head = temp;
 		} 
 
 	}
@@ -51,27 +51,27 @@ public:
 	//2: delete from front
 	void dequeue()
 	{
-		Customer *temp, *target;
-		temp = target = back;
+		Customer *temp, *find;
+		temp = find = head;
 
-		if (target == NULL) //empty
+		if (find == NULL) //empty
 		{
 			return;
 		}
-		else if (target->next == NULL) //exactly 1 Customer
+		else if (find->next == NULL) //exactly 1 Customer
 		{
-			delete back;
-			back = NULL;
+			delete head;
+			head = NULL;
 		}
 		else //more than one Customer
 		{
-			while (target->next != NULL)
+			while (find->next != NULL)
 			{
-				temp = target;
-				target = target->next; //temp is now the second to last Customer, and target is the last Customer
+				temp = find;
+				find = find->next; //temp is now the second to last Customer, and find is the last Customer
 			}
 			temp->next = NULL; //ground our new last Customer
-			delete target; //delete target Customer
+			delete find; //delete target Customer
 		}
 	}
 
@@ -79,7 +79,7 @@ public:
 	//then, check the status of the current customer's order. if it is done, place the next order.
 	void simulateDay()
 	{
-		storeClock = orderTime = orderTimeSum = waitSum = waitAvg = serviceSum = serviceAvg = queueCount = queueSum = queueAvg = 0; 
+		storeClock = orderTime = orderTimeSum = waitSum = waitAvg = serviceTime = serviceSum = serviceAvg = queueCount = queueSum = queueAvg = 0; 
 
 		waitBest = serviceBest = queueBest = 99999; 
 
@@ -90,26 +90,32 @@ public:
 		{
 			if (willCustomerArrive()) //every minute, first check if a customer will join the line
 			{
-				if (queueSize() == 0) //if line is empty, then someone joins, it creates a special case.
+				//Check if line is empty 
+				if (queueSize() == 0) 
 					emptyLine = true;
 				else
 					emptyLine = false;
 					enqueue();
-				if (queueSize() == 1)
+				if (queueSize() == 1) 
+					//If only one person is in line, take their order 
 					singleLine = true;
 				else
 					singleLine = false;
 			}
-			if (orderTime == 0) //if current order is done, customer can leave. place new order
+
+			//If current order is done, customer can leave, or if no customers are in line, make an order 
+			if (orderTime == 0) 
 			{
-				if (emptyLine && singleLine) //if one person just joined the line and is the only one,
-				{							//don't make them leave the queue. 
+				//If one person just joined an empty line and is the only one in line now 
+				if (emptyLine && singleLine) 
+				{							
 					orderTime = getOrder(); 
 					customerCount++; 
 					orderTimeSum += orderTime; 
-					serviceSum = orderTime; 
-					if(serviceBest > serviceSum) {serviceBest = serviceSum; serviceBestTime = storeClock; } 
-					if(serviceWorst < serviceSum) {serviceWorst = serviceSum; serviceWorstTime = storeClock; }
+					if(queueSize() > 1) {serviceTime = head->next->waitTime + orderTime; } else {serviceTime = orderTime; } 
+					serviceSum+=serviceTime; 
+					if(serviceBest > serviceTime) {serviceBest = serviceTime; serviceBestTime = storeClock; } 
+					if(serviceWorst < serviceTime) {serviceWorst = serviceSum; serviceWorstTime = storeClock; }
 					cout << "A customer has arrived in the previously empty line with order time: " << orderTime << " minutes at " << storeClock/60 << " hours" << endl; 
 				}
 				else
@@ -117,24 +123,27 @@ public:
 					dequeue(); //else, this means the previous order is done and the next customer can step up
 					orderTime = rand() % 6 + 1; 
 					orderTimeSum += orderTime; 
-					if(queueSize() > 1) {serviceSum = back->next->waitTime + orderTime; } 
-					else {serviceSum = 1+orderTime; } 
-					if(serviceBest > serviceSum) {serviceBest = serviceSum; serviceBestTime = storeClock; } 
-					if(serviceWorst < serviceSum) {serviceWorst = serviceSum; serviceWorstTime = storeClock; } 
+					if(queueSize() > 1) {serviceTime = head->next->waitTime + orderTime; } 
+					else if(singleLine){serviceTime = head->waitTime + orderTime; } else {serviceTime = orderTime; }
+					serviceSum+=serviceTime; 
+					if(serviceBest > serviceTime) {serviceBest = serviceTime; serviceBestTime = storeClock; } 
+					if(serviceWorst < serviceTime) {serviceWorst = serviceTime; serviceWorstTime = storeClock; } 
 					cout << "Front customer has left and the following customer in line now has an order time: " << orderTime << " minutes at " << storeClock/60 << " hours" << endl; 
 				}
 				
 			}
 			storeClock++;
-			if(orderTime > 0) 
+			if(orderTime > 0) {
 				orderTime--; 
+				
+				
 				if(queueSize() > 1) {
-					back->next->waitTime++; 
-					waitSum += back->next->waitTime; 
-					if(waitBest > back->next->waitTime) {waitBest = back->next->waitTime; waitBestTime = storeClock; } 
-					if(waitWorst < back->next->waitTime) {waitWorst = back->next->waitTime; waitWorstTime = storeClock; } 
-
-				}
+					head->next->waitTime++; 
+					waitSum += head->next->waitTime; 
+					if(waitBest > head->next->waitTime) {waitBest = head->next->waitTime; waitBestTime = storeClock; } 
+					if(waitWorst < head->next->waitTime) {waitWorst = head->next->waitTime; waitWorstTime = storeClock; } 
+				} 
+			}
 
 				if(queueBest > queueSize()) {
 					queueBest = queueSize(); 
@@ -218,7 +227,7 @@ public:
 
 	int getOrder()
 	{
-		Customer *traverse = back;
+		Customer *traverse = head;
 		if (traverse == NULL)
 			return 0;
 		while (traverse->next != NULL)
@@ -226,12 +235,12 @@ public:
 			traverse = traverse->next;
 		}
 		return traverse->order;
-	}
+	} 
 
 	int queueSize()
 	{
 		int queueLength = 0;
-		Customer *traverse = back;
+		Customer *traverse = head;
 		while (traverse != NULL)
 		{
 			traverse = traverse->next;
