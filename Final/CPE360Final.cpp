@@ -2,8 +2,8 @@
 #include<stdlib.h>
 #include<time.h>
 using namespace std;
-const int DAY = 1020; //a work day is 17 hours. 17 hours * 60 minutes is 1020 minutes in a day
-float storeClock, orderTime, orderTimeSum, waitSum, waitAvg, serviceTime, serviceSum, serviceAvg, queueCount, queueSum, queueAvg, waitBest, serviceBest, queueBest, waitWorst, serviceWorst, queueWorst, waitBestTime, serviceBestTime, queueBestTime, waitWorstTime, serviceWorstTime, queueWorstTime;
+
+float storeClock, orderTime, orderTimeSum, waitSum, waitAvg, serviceSum, serviceAvg, queueCount, queueSum, queueAvg, waitBest, serviceBest, queueBest, waitWorst, serviceWorst, queueWorst, waitBestTime, serviceBestTime, queueBestTime, waitWorstTime, serviceWorstTime, queueWorstTime;
 bool emptyLine = true, singleLine = false; 
 
 int customerCount = 0; 
@@ -11,34 +11,33 @@ int customerCount = 0;
 class Customer
 {
 public:
-	int order, waitTime; //track wait time and service time, use before customer leaves 
+	int order, waitTime, serviceTime; 
 	Customer *next;
 
 	Customer()
 	{
 		order = rand() % 6 + 1; 
-		waitTime = 0;
+		waitTime = serviceTime = 0;
 		next = NULL;
 	}
 };
 
-class QueueLine //QueueLines follow FIFO order. elements must be added and removed from opposite sides.
+class Queue 
 {
 public:
 	Customer * head;
 
-	QueueLine()
+	Queue()
 	{
 		head = NULL;
 	}
 
-	//1: add to head
 	void enqueue()
 	{
 		Customer *temp = new Customer; 
 		customerCount++; 
 
-		if (head == NULL) //if empty, our Customer becomes the new head Customer
+		if (head == NULL) 
 			head = temp;
 		else
 		{
@@ -48,47 +47,47 @@ public:
 
 	}
 
-	//2: delete from front
 	void dequeue()
 	{
 		Customer *temp, *find;
 		temp = find = head;
 
-		if (find == NULL) //empty
+		if (find == NULL) 
 		{
+			//Empty line 
 			return;
 		}
-		else if (find->next == NULL) //exactly 1 Customer
+		else if (find->next == NULL) 
 		{
+			//One customer in line
 			delete head;
 			head = NULL;
 		}
-		else //more than one Customer
+		else 
 		{
+			//More than one customer in line 
 			while (find->next != NULL)
 			{
 				temp = find;
-				find = find->next; //temp is now the second to last Customer, and find is the last Customer
+				find = find->next; 
 			}
-			temp->next = NULL; //ground our new last Customer
-			delete find; //delete target Customer
+			temp->next = NULL; 
+			delete find; 
 		}
 	}
 
-	//goes through the day's clock. at each minute, check if a customer will arrive.
-	//then, check the status of the current customer's order. if it is done, place the next order.
 	void simulateDay()
 	{
-		storeClock = orderTime = orderTimeSum = waitSum = waitAvg = serviceTime = serviceSum = serviceAvg = queueCount = queueSum = queueAvg = 0; 
+		storeClock = orderTime = orderTimeSum = waitSum = waitAvg = serviceSum = serviceAvg = queueCount = queueSum = queueAvg = 0; 
 
 		waitBest = serviceBest = queueBest = 99999; 
 
 		waitWorst = serviceWorst = queueWorst = -1; 
-		//events 1: someone walks in, 2: someone is done and walks out (both, 1, or neither can happen in any min)
 
-		while (storeClock < DAY) //simulate a day one minute at a time
+		while (storeClock < 1020) 
 		{
-			if (willCustomerArrive()) //every minute, first check if a customer will join the line
+			if (customerArrives()) 
+			//Check if a customer will join the line
 			{
 				//Check if line is empty 
 				if (queueSize() == 0) 
@@ -109,25 +108,19 @@ public:
 				//If one person just joined an empty line and is the only one in line now 
 				if (emptyLine && singleLine) 
 				{							
-					orderTime = getOrder(); 
+					orderTime = placeOrder(); 
 					customerCount++; 
 					orderTimeSum += orderTime; 
-					if(queueSize() > 1) {serviceTime = head->next->waitTime + orderTime; } else {serviceTime = orderTime; } 
-					serviceSum+=serviceTime; 
-					if(serviceBest > serviceTime) {serviceBest = serviceTime; serviceBestTime = storeClock; } 
-					if(serviceWorst < serviceTime) {serviceWorst = serviceSum; serviceWorstTime = storeClock; }
+					
 					cout << "A customer has arrived in the previously empty line with order time: " << orderTime << " minutes at " << storeClock/60 << " hours" << endl; 
 				}
 				else
 				{ 
-					dequeue(); //else, this means the previous order is done and the next customer can step up
+					//The previous order is done and the next customer can step up 
+					dequeue(); 
 					orderTime = rand() % 6 + 1; 
 					orderTimeSum += orderTime; 
-					if(queueSize() > 1) {serviceTime = head->next->waitTime + orderTime; } 
-					else if(singleLine){serviceTime = head->waitTime + orderTime; } else {serviceTime = orderTime; }
-					serviceSum+=serviceTime; 
-					if(serviceBest > serviceTime) {serviceBest = serviceTime; serviceBestTime = storeClock; } 
-					if(serviceWorst < serviceTime) {serviceWorst = serviceTime; serviceWorstTime = storeClock; } 
+					
 					cout << "Front customer has left and the following customer in line now has an order time: " << orderTime << " minutes at " << storeClock/60 << " hours" << endl; 
 				}
 				
@@ -136,13 +129,38 @@ public:
 			if(orderTime > 0) {
 				orderTime--; 
 				
-				
-				if(queueSize() > 1) {
-					head->next->waitTime++; 
-					waitSum += head->next->waitTime; 
-					if(waitBest > head->next->waitTime) {waitBest = head->next->waitTime; waitBestTime = storeClock; } 
-					if(waitWorst < head->next->waitTime) {waitWorst = head->next->waitTime; waitWorstTime = storeClock; } 
-				} 
+				Customer *find;
+				find = head;
+
+				if (find == NULL) 
+				{
+					//No one in line 
+				}
+				else if (find->next == NULL) 
+				{
+					//One customer so no wait time 
+					find->serviceTime++; 
+
+					if(serviceBest > find->serviceTime) {serviceBest = find->serviceTime; serviceBestTime = storeClock; } 
+					if(serviceWorst < find->serviceTime) {serviceWorst = find->serviceTime; serviceWorstTime = storeClock; } 
+				}
+				else
+				{ 
+					//More than one customer 
+					find->next->waitTime++; 
+					find->next->serviceTime++; 
+					waitSum += find->next->waitTime; 
+
+					find->serviceTime++; 
+
+					if(serviceBest > find->serviceTime) {serviceBest = find->serviceTime; serviceBestTime = storeClock; } 
+					if(serviceWorst < find->serviceTime) {serviceWorst = find->serviceTime; serviceWorstTime = storeClock; } 
+
+					if(waitBest > find->next->waitTime) {waitBest = find->next->waitTime; waitBestTime = storeClock; } 
+					if(waitWorst < find->next->waitTime) {waitWorst = find->next->waitTime; waitWorstTime = storeClock; } 
+
+				}
+
 			}
 
 				if(queueBest > queueSize()) {
@@ -171,23 +189,22 @@ public:
   		cout << "================================================" << endl;
   		cout << "Total customer count: [" << customerCount << "]" << endl; 
 		cout << "Average wait time: [" << waitAvg << "] minutes " << endl; 
-		cout << "Best wait time: [" << waitBest << "] minutes at time " << waitBestTime << endl; 
-		cout << "Worst wait time: [" << waitWorst << "] minutes at time " << waitWorstTime << endl; 
+		cout << "Best wait time: [" << waitBest << "] minutes at time: " << waitBestTime << endl; 
+		cout << "Worst wait time: [" << waitWorst << "] minutes at time: " << waitWorstTime << endl; 
 		cout << "Average service time: [" << serviceAvg << "] minutes " << endl; 
-		cout << "Best service time: [" << serviceBest << "] minutes at time " << serviceBestTime << endl; 
-		cout << "Worst service time: [" << serviceWorst << "] minutes at time " << serviceWorstTime << endl; 
+		cout << "Best service time: [" << serviceBest << "] minutes at time: " << serviceBestTime << endl; 
+		cout << "Worst service time: [" << serviceWorst << "] minutes at time: " << serviceWorstTime << endl; 
 		cout << "Average queue size: [" << queueAvg << "]" << endl; 
-		cout << "Smallest queue length: [" << queueBest << "] at time " << queueBestTime << endl; 
-		cout << "Largest queue length: [" << queueWorst << "] at time " << queueWorstTime << endl; 
+		cout << "Smallest queue length: [" << queueBest << "] at time: " << queueBestTime << endl; 
+		cout << "Largest queue length: [" << queueWorst << "] at time: " << queueWorstTime << endl; 
 		cout << "================================================" << endl; 
 		cout << endl; 
 	}
 
-	//determine if a customer will arrive at the given minute
-	bool willCustomerArrive()
+	bool customerArrives() 
 	{
-		int prob = rand() % 100;
-		if (storeClock < 120) //8:00 to 10:00
+		int prob = rand() % 100; 
+		if (storeClock < 120) //8:00 to 10:00 
 		{
 			if (prob <= 30)
 				return true;
@@ -217,24 +234,24 @@ public:
 			if (prob <= 20)
 				return true;
 		}
-		else if (storeClock < DAY) //11:00 to 1:00 (close) 
+		else if (storeClock < 1020) //11:00 to 1:00 (close) 
 		{
 			if (prob <= 10)
 				return true;
 		}
 		return false;
-	}
+	} 
 
-	int getOrder()
+	int placeOrder()
 	{
-		Customer *traverse = head;
-		if (traverse == NULL)
+		Customer *find = head; 
+		if (find == NULL)
 			return 0;
-		while (traverse->next != NULL)
+		while (find->next != NULL)
 		{
-			traverse = traverse->next;
+			find = find->next;
 		}
-		return traverse->order;
+		return find->order;
 	} 
 
 	int queueSize()
@@ -254,7 +271,7 @@ public:
 int main()
 {
 	srand(time(NULL));
-	QueueLine myStore;
+	Queue myStore; 
 	myStore.simulateDay(); 
     return 0;
 }
