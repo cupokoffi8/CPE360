@@ -76,7 +76,7 @@ public:
 		}
 	}
 
-	void simulateDay()
+	void workDay()
 	{
 		storeClock = orderTime = orderTimeSum = waitSum = waitAvg = serviceSum = serviceAvg = queueCount = queueSum = queueAvg = 0; 
 
@@ -187,16 +187,16 @@ public:
   		cout << "|            WELCOME TO BURGER KING            |" << endl;
   		cout << "|            here are today's stats            |" << endl;
   		cout << "================================================" << endl;
-  		cout << "Total customer count: [" << customerCount << "]" << endl; 
-		cout << "Average wait time: [" << waitAvg << "] minutes " << endl; 
-		cout << "Best wait time: [" << waitBest << "] minutes at time: " << waitBestTime << endl; 
-		cout << "Worst wait time: [" << waitWorst << "] minutes at time: " << waitWorstTime << endl; 
-		cout << "Average service time: [" << serviceAvg << "] minutes " << endl; 
-		cout << "Best service time: [" << serviceBest << "] minutes at time: " << serviceBestTime << endl; 
-		cout << "Worst service time: [" << serviceWorst << "] minutes at time: " << serviceWorstTime << endl; 
-		cout << "Average queue size: [" << queueAvg << "]" << endl; 
-		cout << "Smallest queue length: [" << queueBest << "] at time: " << queueBestTime << endl; 
-		cout << "Largest queue length: [" << queueWorst << "] at time: " << queueWorstTime << endl; 
+  		cout << "Total customer count: [ " << customerCount << " ]" << endl; 
+		cout << "Average wait time: [ " << waitAvg << " ] minutes " << endl; 
+		cout << "Best wait time: [ " << waitBest << " ] minutes at time: " << waitBestTime << endl; 
+		cout << "Worst wait time: [ " << waitWorst << " ] minutes at time: " << waitWorstTime << endl; 
+		cout << "Average service time: [ " << serviceAvg << " ] minutes " << endl; 
+		cout << "Best service time: [ " << serviceBest << " ] minutes at time: " << serviceBestTime << endl; 
+		cout << "Worst service time: [ " << serviceWorst << " ] minutes at time: " << serviceWorstTime << endl; 
+		cout << "Average queue size: [ " << queueAvg << " ]" << endl; 
+		cout << "Smallest queue length: [ " << queueBest << " ] at time: " << queueBestTime << endl; 
+		cout << "Largest queue length: [ " << queueWorst << " ] at time: " << queueWorstTime << endl; 
 		cout << "================================================" << endl; 
 		cout << endl; 
 	}
@@ -272,6 +272,6 @@ int main()
 {
 	srand(time(NULL));
 	Queue myStore; 
-	myStore.simulateDay(); 
+	myStore.workDay(); 
     return 0;
 }
