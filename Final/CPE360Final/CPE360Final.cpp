@@ -204,37 +204,44 @@ public:
 	bool customerArrives() 
 	{
 		int prob = rand() % 100; 
-		if (storeClock < 120) //8:00 to 10:00 
+		if (storeClock < 120) 
+		//8:00 to 9:59 
 		{
 			if (prob <= 30)
 				return true;
 		}
-		else if (storeClock < 210) //10:00 to 11:30
+		else if (storeClock < 210) 
+		//10:00 to 11:29 
 		{
 			if (prob <= 10)
 				return true;
 		}
-		else if (storeClock < 330) //11:30 to 1:30
+		else if (storeClock < 330) 
+		//11:30 to 1:29 
 		{
 			if (prob <= 40)
 				return true;
 		}
-		else if (storeClock < 570) //1:30 to 5:30
+		else if (storeClock < 570) 
+		//1:30 to 5:29 
 		{
 			if (prob <= 10)
 				return true;
 		}
-		else if (storeClock < 720) //5:30 to 8:00
+		else if (storeClock < 720) 
+		//5:30 to 7:59 
 		{
 			if (prob <= 25)
 				return true;
 		}
-		else if (storeClock < 900) //8:00 to 11:00
+		else if (storeClock < 900) 
+		//8:00 to 10:59
 		{
 			if (prob <= 20)
 				return true;
 		}
-		else if (storeClock < 1020) //11:00 to 1:00 (close) 
+		else if (storeClock < 1020) 
+		//11:00 to 1:00 
 		{
 			if (prob <= 10)
 				return true;
