@@ -1,7 +1,8 @@
 #include<iostream>
 #include<stdlib.h>
 #include<time.h>
-using namespace std;
+using namespace std; 
+//Extra credit part 2: two lines each with a corresponding counter 
 
 float storeClock, orderTime, orderTimeExtraBreakfast, orderTimeExtraLunch, orderTimeExtraDinner, orderTimeSum, waitSum, waitAvg, serviceSum, serviceAvg, queueCount, queueSum, queueAvg, waitBest, serviceBest, queueBest, waitWorst, serviceWorst, queueWorst, waitBestTime, serviceBestTime, queueBestTime, waitWorstTime, serviceWorstTime, queueWorstTime;
 bool emptyLine = true, singleLine = false; 
