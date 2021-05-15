@@ -155,7 +155,6 @@ int main()
 {
 	srand(time(NULL));
 	Queue myStore; //Regular line 
-	QueueExtra myStoreExtra; //Extra line for busy hours 
 	
 		storeClock = orderTime = orderTimeSum = waitSum = waitAvg = serviceSum = serviceAvg = queueCount = queueSum = queueAvg = 0; 
 
@@ -635,7 +634,7 @@ int main()
 				queueCount++; 
 		} 
 
-		while (storeClock <= 720 && storeClock > 330) 
+		while (storeClock <= 720 && storeClock > 570) 
 		//Dinner 
 				{
 			if (customerArrives()) 

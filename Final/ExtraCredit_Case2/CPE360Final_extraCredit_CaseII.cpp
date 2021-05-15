@@ -3,7 +3,7 @@
 #include<time.h>
 using namespace std;
 
-float storeClock, orderTime, orderTimeOne, orderTimeTwo, orderTimeSum, waitSum, waitAvg, serviceSum, serviceAvg, queueCount, queueSum, queueAvg, waitBest, serviceBest, queueBest, waitWorst, serviceWorst, queueWorst, waitBestTime, serviceBestTime, queueBestTime, waitWorstTime, serviceWorstTime, queueWorstTime;
+float storeClock, orderTime, orderTimeExtraBreakfast, orderTimeExtraLunch, orderTimeExtraDinner, orderTimeSum, waitSum, waitAvg, serviceSum, serviceAvg, queueCount, queueSum, queueAvg, waitBest, serviceBest, queueBest, waitWorst, serviceWorst, queueWorst, waitBestTime, serviceBestTime, queueBestTime, waitWorstTime, serviceWorstTime, queueWorstTime;
 bool emptyLine = true, singleLine = false; 
 
 int customerCount = 0; 
@@ -11,7 +11,7 @@ int customerCount = 0;
 class Customer
 {
 public:
-	int order, orderCounterOne, orderCounterTwo, waitTime, serviceTime; 
+	int order, waitTime, serviceTime; 
 	Customer *next;
 
 	Customer()
@@ -237,7 +237,7 @@ int main()
 	Queue myStore; //Regular line 
 	QueueExtra myStoreExtra; //Extra line for busy hours 
 	
-		storeClock = orderTime = orderTimeSum = waitSum = waitAvg = serviceSum = serviceAvg = queueCount = queueSum = queueAvg = 0; 
+		storeClock = orderTime = orderTimeExtraBreakfast = orderTimeExtraLunch = orderTimeExtraDinner = orderTimeSum = waitSum = waitAvg = serviceSum = serviceAvg = queueCount = queueSum = queueAvg = 0; 
 
 		waitBest = serviceBest = queueBest = 99999; 
 
@@ -246,6 +246,7 @@ int main()
 		while (storeClock <= 120) 
 		//Breakfast 
 		{
+		if(myStore.queueSize() < myStoreExtra.queueSize()) {
 			if (customerArrives()) 
 			//Check if a customer will join the line
 			{
@@ -263,113 +264,104 @@ int main()
 			}
 
 			//If current order is done, customer can leave, or if no customers are in line, make an order 
-			if (orderTimeOne == 0) 
-			{	
-
+			if (orderTime == 0) 
+			{
 				//If one person just joined an empty line and is the only one in line now 
 				if (emptyLine && singleLine) 
 				{							
-					orderTimeOne = rand() % 6 + 1;  
-
+					orderTime = rand() % 6 + 1;
 					customerCount++; 
-					orderTimeSum += orderTimeOne; 
+					orderTimeSum += orderTime; 
 					
-					cout << "A customer has arrived for breakfast in the previously empty line with order time: " << orderTimeOne << " minutes at " << storeClock/60 << " hours" << endl; 
+					cout << "A customer has arrived in the previously empty line with order time: " << orderTime << " minutes at " << storeClock/60 << " hours" << endl; 
 				}
 				else
 				{ 
 					//The previous order is done and the next customer can step up 
 					myStore.dequeue(); 
-					orderTimeOne = rand() % 6 + 1; 
-					orderTimeSum += orderTimeOne; 
+					orderTime = rand() % 6 + 1; 
+					orderTimeSum += orderTime; 
 					
-					cout << "The following customer in breakfast line now has an order time: " << orderTimeOne << " minutes at " << storeClock/60 << " hours" << endl; 
+					cout << "Front customer has left and the following customer in line now has an order time: " << orderTime << " minutes at " << storeClock/60 << " hours" << endl; 
 				}
 				
-			} else if (orderTimeTwo == 0 && orderTimeOne != 0) {
-
-					//The previous order is done and the next customer can step up 
-					myStore.dequeue(); 
-					orderTimeTwo = rand() % 6 + 1; 
-					orderTimeSum += orderTimeTwo; 
-					
-					cout << "The following customer in breakfast line now has an order2 time: " << orderTimeTwo << " minutes at " << storeClock/60 << " hours" << endl; 
-				}
-				
-			storeClock++;
-			if(orderTimeOne > 0) {
-				orderTimeOne--; 
-				
-				Customer *find;
-				find = myStore.head; 
-
-				if (find == NULL) 
-				{
-					//No one in line 
-				}
-				else if (find->next == NULL) 
-				{
-					//One customer so no wait time 
-					find->serviceTime++; 
-
-					if(serviceBest > find->serviceTime) {serviceBest = find->serviceTime; serviceBestTime = storeClock; } 
-					if(serviceWorst < find->serviceTime) {serviceWorst = find->serviceTime; serviceWorstTime = storeClock; } 
-				}
-				else
-				{ 
-					//More than one customer 
-					find->next->waitTime++; 
-					find->next->serviceTime++; 
-					waitSum += find->next->waitTime; 
-
-					find->serviceTime++; 
-
-					if(serviceBest > find->serviceTime) {serviceBest = find->serviceTime; serviceBestTime = storeClock; } 
-					if(serviceWorst < find->serviceTime) {serviceWorst = find->serviceTime; serviceWorstTime = storeClock; } 
-
-					if(waitBest > find->next->waitTime) {waitBest = find->next->waitTime; waitBestTime = storeClock; } 
-					if(waitWorst < find->next->waitTime) {waitWorst = find->next->waitTime; waitWorstTime = storeClock; } 
-
-				}
-
-			} 
-
-			if(orderTimeTwo > 0) { 
-				orderTimeTwo--; 
-				
-				Customer *find;
-				find = myStore.head; 
-
-				if (find == NULL) 
-				{
-					//No one in line 
-				}
-				else if (find->next == NULL) 
-				{
-					//One customer so no wait time 
-					find->serviceTime++; 
-
-					if(serviceBest > find->serviceTime) {serviceBest = find->serviceTime; serviceBestTime = storeClock; } 
-					if(serviceWorst < find->serviceTime) {serviceWorst = find->serviceTime; serviceWorstTime = storeClock; } 
-				}
-				else
-				{ 
-					//More than one customer 
-					find->next->waitTime++; 
-					find->next->serviceTime++; 
-					waitSum += find->next->waitTime; 
-
-					find->serviceTime++; 
-
-					if(serviceBest > find->serviceTime) {serviceBest = find->serviceTime; serviceBestTime = storeClock; } 
-					if(serviceWorst < find->serviceTime) {serviceWorst = find->serviceTime; serviceWorstTime = storeClock; } 
-
-					if(waitBest > find->next->waitTime) {waitBest = find->next->waitTime; waitBestTime = storeClock; } 
-					if(waitWorst < find->next->waitTime) {waitWorst = find->next->waitTime; waitWorstTime = storeClock; } 
-
-				}
-
 			}
+		} 
+		else {
+			if (customerArrives()) 
+			//Check if a customer will join the line
+			{
+				//Check if line is empty 
+				if (myStoreExtra.queueSize() == 0) 
+					emptyLine = true;
+				else
+					emptyLine = false;
+					myStoreExtra.enqueue();
+				if (myStoreExtra.queueSize() == 1) 
+					//If only one person is in line, take their order 
+					singleLine = true;
+				else
+					singleLine = false;
+			}
+
+			//If current order is done, customer can leave, or if no customers are in line, make an order 
+			if (orderTimeExtraBreakfast == 0) 
+			{
+				//If one person just joined an empty line and is the only one in line now 
+				if (emptyLine && singleLine) 
+				{							
+					orderTimeExtraBreakfast = myStoreExtra.placeOrder();  
+					customerCount++; 
+					orderTimeSum += orderTimeExtraBreakfast; 
+					
+					cout << "A customer has arrived in the previously empty second line with order time: " << orderTimeExtraBreakfast << " minutes at " << storeClock/60 << " hours" << endl; 
+				}
+				else
+				{ 
+					//The previous order is done and the next customer can step up 
+					myStoreExtra.dequeue(); 
+					orderTimeExtraBreakfast = rand() % 6 + 1; 
+					orderTimeSum += orderTimeExtraBreakfast; 
+					
+					cout << "Front customer has left and the following customer in second line now has an order time: " << orderTimeExtraBreakfast << " minutes at " << storeClock/60 << " hours" << endl; 
+				}	
+			}
+		}
+			storeClock++;
+			if(orderTime > 0) {
+				orderTime--; 
+				
+				Customer *find;
+				find = myStore.head; 
+
+				if (find == NULL) 
+				{
+					//No one in line 
+				}
+				else if (find->next == NULL) 
+				{
+					//One customer so no wait time 
+					find->serviceTime++; 
+
+					if(serviceBest > find->serviceTime) {serviceBest = find->serviceTime; serviceBestTime = storeClock; } 
+					if(serviceWorst < find->serviceTime) {serviceWorst = find->serviceTime; serviceWorstTime = storeClock; } 
+				}
+				else
+				{ 
+					//More than one customer 
+					find->next->waitTime++; 
+					find->next->serviceTime++; 
+					waitSum += find->next->waitTime; 
+
+					find->serviceTime++; 
+
+					if(serviceBest > find->serviceTime) {serviceBest = find->serviceTime; serviceBestTime = storeClock; } 
+					if(serviceWorst < find->serviceTime) {serviceWorst = find->serviceTime; serviceWorstTime = storeClock; } 
+
+					if(waitBest > find->next->waitTime) {waitBest = find->next->waitTime; waitBestTime = storeClock; } 
+					if(waitWorst < find->next->waitTime) {waitWorst = find->next->waitTime; waitWorstTime = storeClock; } 
+
+				}
 
 				if(queueBest > myStore.queueSize()) {
 					queueBest = myStore.queueSize(); 
@@ -383,7 +375,62 @@ int main()
 
 				queueSum += myStore.queueSize(); 
 				queueCount++; 
+
+			} 
+
+			if(orderTimeExtraBreakfast > 0) {
+				orderTimeExtraBreakfast--; 
+				
+				Customer *find;
+				find = myStoreExtra.head; 
+
+				if (find == NULL) 
+				{
+					//No one in line 
+				}
+				else if (find->next == NULL) 
+				{
+					//One customer so no wait time 
+					find->serviceTime++; 
+
+					if(serviceBest > find->serviceTime) {serviceBest = find->serviceTime; serviceBestTime = storeClock; } 
+					if(serviceWorst < find->serviceTime) {serviceWorst = find->serviceTime; serviceWorstTime = storeClock; } 
+				}
+				else
+				{ 
+					//More than one customer 
+					find->next->waitTime++; 
+					find->next->serviceTime++; 
+					waitSum += find->next->waitTime; 
+
+					find->serviceTime++; 
+
+					if(serviceBest > find->serviceTime) {serviceBest = find->serviceTime; serviceBestTime = storeClock; } 
+					if(serviceWorst < find->serviceTime) {serviceWorst = find->serviceTime; serviceWorstTime = storeClock; } 
+
+					if(waitBest > find->next->waitTime) {waitBest = find->next->waitTime; waitBestTime = storeClock; } 
+					if(waitWorst < find->next->waitTime) {waitWorst = find->next->waitTime; waitWorstTime = storeClock; } 
+
+				}
+
+				if(queueBest > myStoreExtra.queueSize()) {
+					queueBest = myStoreExtra.queueSize(); 
+					queueBestTime = storeClock; 
+				} 
+
+				if(queueWorst < myStoreExtra.queueSize()) {
+					queueWorst = myStoreExtra.queueSize(); 
+					queueWorstTime = storeClock; 
+				}
+
+				queueSum += myStoreExtra.queueSize(); 
+				queueCount++; 
+
+			}
+
+				
 		} 
+
 
 		while (storeClock <= 210 && storeClock > 120) 
 		//Regular 
@@ -481,7 +528,8 @@ int main()
 
 		while (storeClock <= 330 && storeClock > 210) 
 		//Lunch 
-				{
+			{
+		if(myStore.queueSize() < myStoreExtra.queueSize()) {
 			if (customerArrives()) 
 			//Check if a customer will join the line
 			{
@@ -499,113 +547,104 @@ int main()
 			}
 
 			//If current order is done, customer can leave, or if no customers are in line, make an order 
-			if (orderTimeOne == 0) 
-			{	
-
+			if (orderTime == 0) 
+			{
 				//If one person just joined an empty line and is the only one in line now 
 				if (emptyLine && singleLine) 
 				{							
-					orderTimeOne = rand() % 6 + 1; 
-
+					orderTime = rand() % 6 + 1;
 					customerCount++; 
-					orderTimeSum += orderTimeOne; 
+					orderTimeSum += orderTime; 
 					
-					cout << "A customer has arrived for lunch in the previously empty line with order time: " << orderTimeOne << " minutes at " << storeClock/60 << " hours" << endl; 
+					cout << "A customer has arrived in the previously empty line with order time: " << orderTime << " minutes at " << storeClock/60 << " hours" << endl; 
 				}
 				else
 				{ 
 					//The previous order is done and the next customer can step up 
 					myStore.dequeue(); 
-					orderTimeOne = rand() % 6 + 1; 
-					orderTimeSum += orderTimeOne; 
+					orderTime = rand() % 6 + 1; 
+					orderTimeSum += orderTime; 
 					
-					cout << "The following customer in lunch line now has an order time: " << orderTimeOne << " minutes at " << storeClock/60 << " hours" << endl; 
+					cout << "Front customer has left and the following customer in line now has an order time: " << orderTime << " minutes at " << storeClock/60 << " hours" << endl; 
 				}
 				
-			} else if (orderTimeTwo == 0 && orderTimeOne != 0) {
-
-					//The previous order is done and the next customer can step up 
-					myStore.dequeue(); 
-					orderTimeTwo = rand() % 6 + 1; 
-					orderTimeSum += orderTimeTwo; 
-					
-					cout << "The following customer in lunch line now has an order2 time: " << orderTimeTwo << " minutes at " << storeClock/60 << " hours" << endl; 
-				}
-				
-			storeClock++;
-			if(orderTimeOne > 0) {
-				orderTimeOne--; 
-				
-				Customer *find;
-				find = myStore.head; 
-
-				if (find == NULL) 
-				{
-					//No one in line 
-				}
-				else if (find->next == NULL) 
-				{
-					//One customer so no wait time 
-					find->serviceTime++; 
-
-					if(serviceBest > find->serviceTime) {serviceBest = find->serviceTime; serviceBestTime = storeClock; } 
-					if(serviceWorst < find->serviceTime) {serviceWorst = find->serviceTime; serviceWorstTime = storeClock; } 
-				}
-				else
-				{ 
-					//More than one customer 
-					find->next->waitTime++; 
-					find->next->serviceTime++; 
-					waitSum += find->next->waitTime; 
-
-					find->serviceTime++; 
-
-					if(serviceBest > find->serviceTime) {serviceBest = find->serviceTime; serviceBestTime = storeClock; } 
-					if(serviceWorst < find->serviceTime) {serviceWorst = find->serviceTime; serviceWorstTime = storeClock; } 
-
-					if(waitBest > find->next->waitTime) {waitBest = find->next->waitTime; waitBestTime = storeClock; } 
-					if(waitWorst < find->next->waitTime) {waitWorst = find->next->waitTime; waitWorstTime = storeClock; } 
-
-				}
-
-			} 
-
-			if(orderTimeTwo > 0) { 
-				orderTimeTwo--; 
-				
-				Customer *find;
-				find = myStore.head; 
-
-				if (find == NULL) 
-				{
-					//No one in line 
-				}
-				else if (find->next == NULL) 
-				{
-					//One customer so no wait time 
-					find->serviceTime++; 
-
-					if(serviceBest > find->serviceTime) {serviceBest = find->serviceTime; serviceBestTime = storeClock; } 
-					if(serviceWorst < find->serviceTime) {serviceWorst = find->serviceTime; serviceWorstTime = storeClock; } 
-				}
-				else
-				{ 
-					//More than one customer 
-					find->next->waitTime++; 
-					find->next->serviceTime++; 
-					waitSum += find->next->waitTime; 
-
-					find->serviceTime++; 
-
-					if(serviceBest > find->serviceTime) {serviceBest = find->serviceTime; serviceBestTime = storeClock; } 
-					if(serviceWorst < find->serviceTime) {serviceWorst = find->serviceTime; serviceWorstTime = storeClock; } 
-
-					if(waitBest > find->next->waitTime) {waitBest = find->next->waitTime; waitBestTime = storeClock; } 
-					if(waitWorst < find->next->waitTime) {waitWorst = find->next->waitTime; waitWorstTime = storeClock; } 
-
-				}
-
 			}
+		} 
+		else {
+			if (customerArrives()) 
+			//Check if a customer will join the line
+			{
+				//Check if line is empty 
+				if (myStoreExtra.queueSize() == 0) 
+					emptyLine = true;
+				else
+					emptyLine = false;
+					myStoreExtra.enqueue();
+				if (myStoreExtra.queueSize() == 1) 
+					//If only one person is in line, take their order 
+					singleLine = true;
+				else
+					singleLine = false;
+			}
+
+			//If current order is done, customer can leave, or if no customers are in line, make an order 
+			if (orderTimeExtraLunch == 0) 
+			{
+				//If one person just joined an empty line and is the only one in line now 
+				if (emptyLine && singleLine) 
+				{							
+					orderTimeExtraLunch = myStoreExtra.placeOrder();  
+					customerCount++; 
+					orderTimeSum += orderTimeExtraLunch; 
+					
+					cout << "A customer has arrived in the previously empty second line with order time: " << orderTimeExtraLunch << " minutes at " << storeClock/60 << " hours" << endl; 
+				}
+				else
+				{ 
+					//The previous order is done and the next customer can step up 
+					myStoreExtra.dequeue(); 
+					orderTimeExtraLunch = rand() % 6 + 1; 
+					orderTimeSum += orderTimeExtraLunch; 
+					
+					cout << "Front customer has left and the following customer in second line now has an order time: " << orderTimeExtraLunch << " minutes at " << storeClock/60 << " hours" << endl; 
+				}	
+			}
+		}
+			storeClock++;
+			if(orderTime > 0) {
+				orderTime--; 
+				
+				Customer *find;
+				find = myStore.head; 
+
+				if (find == NULL) 
+				{
+					//No one in line 
+				}
+				else if (find->next == NULL) 
+				{
+					//One customer so no wait time 
+					find->serviceTime++; 
+
+					if(serviceBest > find->serviceTime) {serviceBest = find->serviceTime; serviceBestTime = storeClock; } 
+					if(serviceWorst < find->serviceTime) {serviceWorst = find->serviceTime; serviceWorstTime = storeClock; } 
+				}
+				else
+				{ 
+					//More than one customer 
+					find->next->waitTime++; 
+					find->next->serviceTime++; 
+					waitSum += find->next->waitTime; 
+
+					find->serviceTime++; 
+
+					if(serviceBest > find->serviceTime) {serviceBest = find->serviceTime; serviceBestTime = storeClock; } 
+					if(serviceWorst < find->serviceTime) {serviceWorst = find->serviceTime; serviceWorstTime = storeClock; } 
+
+					if(waitBest > find->next->waitTime) {waitBest = find->next->waitTime; waitBestTime = storeClock; } 
+					if(waitWorst < find->next->waitTime) {waitWorst = find->next->waitTime; waitWorstTime = storeClock; } 
+
+				}
 
 				if(queueBest > myStore.queueSize()) {
 					queueBest = myStore.queueSize(); 
@@ -619,6 +658,58 @@ int main()
 
 				queueSum += myStore.queueSize(); 
 				queueCount++; 
+
+			} 
+
+			if(orderTimeExtraLunch > 0) {
+				orderTimeExtraLunch--; 
+				
+				Customer *find;
+				find = myStoreExtra.head; 
+
+				if (find == NULL) 
+				{
+					//No one in line 
+				}
+				else if (find->next == NULL) 
+				{
+					//One customer so no wait time 
+					find->serviceTime++; 
+
+					if(serviceBest > find->serviceTime) {serviceBest = find->serviceTime; serviceBestTime = storeClock; } 
+					if(serviceWorst < find->serviceTime) {serviceWorst = find->serviceTime; serviceWorstTime = storeClock; } 
+				}
+				else
+				{ 
+					//More than one customer 
+					find->next->waitTime++; 
+					find->next->serviceTime++; 
+					waitSum += find->next->waitTime; 
+
+					find->serviceTime++; 
+
+					if(serviceBest > find->serviceTime) {serviceBest = find->serviceTime; serviceBestTime = storeClock; } 
+					if(serviceWorst < find->serviceTime) {serviceWorst = find->serviceTime; serviceWorstTime = storeClock; } 
+
+					if(waitBest > find->next->waitTime) {waitBest = find->next->waitTime; waitBestTime = storeClock; } 
+					if(waitWorst < find->next->waitTime) {waitWorst = find->next->waitTime; waitWorstTime = storeClock; } 
+
+				}
+
+				if(queueBest > myStoreExtra.queueSize()) {
+					queueBest = myStoreExtra.queueSize(); 
+					queueBestTime = storeClock; 
+				} 
+
+				if(queueWorst < myStoreExtra.queueSize()) {
+					queueWorst = myStoreExtra.queueSize(); 
+					queueWorstTime = storeClock; 
+				}
+
+				queueSum += myStoreExtra.queueSize(); 
+				queueCount++; 
+
+			}		
 		} 
 
 		while (storeClock <= 570 && storeClock > 330) 
@@ -715,9 +806,10 @@ int main()
 				queueCount++; 
 		} 
 
-		while (storeClock <= 720 && storeClock > 330) 
+		while (storeClock <= 720 && storeClock > 570) 
 		//Dinner 
-				{
+			{
+		if(myStore.queueSize() < myStoreExtra.queueSize()) {
 			if (customerArrives()) 
 			//Check if a customer will join the line
 			{
@@ -735,113 +827,104 @@ int main()
 			}
 
 			//If current order is done, customer can leave, or if no customers are in line, make an order 
-			if (orderTimeOne == 0) 
-			{	
-
+			if (orderTime == 0) 
+			{
 				//If one person just joined an empty line and is the only one in line now 
 				if (emptyLine && singleLine) 
 				{							
-					orderTimeOne = rand() % 6 + 1;  
-
+					orderTime = rand() % 6 + 1;
 					customerCount++; 
-					orderTimeSum += orderTimeOne; 
+					orderTimeSum += orderTime; 
 					
-					cout << "A customer has arrived for dinner in the previously empty line with order time: " << orderTimeOne << " minutes at " << storeClock/60 << " hours" << endl; 
+					cout << "A customer has arrived in the previously empty line with order time: " << orderTime << " minutes at " << storeClock/60 << " hours" << endl; 
 				}
 				else
 				{ 
 					//The previous order is done and the next customer can step up 
 					myStore.dequeue(); 
-					orderTimeOne = rand() % 6 + 1; 
-					orderTimeSum += orderTimeOne; 
+					orderTime = rand() % 6 + 1; 
+					orderTimeSum += orderTime; 
 					
-					cout << "The following customer in dinner line now has an order time: " << orderTimeOne << " minutes at " << storeClock/60 << " hours" << endl; 
+					cout << "Front customer has left and the following customer in line now has an order time: " << orderTime << " minutes at " << storeClock/60 << " hours" << endl; 
 				}
 				
-			} else if (orderTimeTwo == 0 && orderTimeOne != 0) {
-
-					//The previous order is done and the next customer can step up 
-					myStore.dequeue(); 
-					orderTimeTwo = rand() % 6 + 1; 
-					orderTimeSum += orderTimeTwo; 
-					
-					cout << "The following customer in dinner line now has an order2 time: " << orderTimeTwo << " minutes at " << storeClock/60 << " hours" << endl; 
-				}
-				
-			storeClock++;
-			if(orderTimeOne > 0) {
-				orderTimeOne--; 
-				
-				Customer *find;
-				find = myStore.head; 
-
-				if (find == NULL) 
-				{
-					//No one in line 
-				}
-				else if (find->next == NULL) 
-				{
-					//One customer so no wait time 
-					find->serviceTime++; 
-
-					if(serviceBest > find->serviceTime) {serviceBest = find->serviceTime; serviceBestTime = storeClock; } 
-					if(serviceWorst < find->serviceTime) {serviceWorst = find->serviceTime; serviceWorstTime = storeClock; } 
-				}
-				else
-				{ 
-					//More than one customer 
-					find->next->waitTime++; 
-					find->next->serviceTime++; 
-					waitSum += find->next->waitTime; 
-
-					find->serviceTime++; 
-
-					if(serviceBest > find->serviceTime) {serviceBest = find->serviceTime; serviceBestTime = storeClock; } 
-					if(serviceWorst < find->serviceTime) {serviceWorst = find->serviceTime; serviceWorstTime = storeClock; } 
-
-					if(waitBest > find->next->waitTime) {waitBest = find->next->waitTime; waitBestTime = storeClock; } 
-					if(waitWorst < find->next->waitTime) {waitWorst = find->next->waitTime; waitWorstTime = storeClock; } 
-
-				}
-
-			} 
-
-			if(orderTimeTwo > 0) { 
-				orderTimeTwo--; 
-				
-				Customer *find;
-				find = myStore.head; 
-
-				if (find == NULL) 
-				{
-					//No one in line 
-				}
-				else if (find->next == NULL) 
-				{
-					//One customer so no wait time 
-					find->serviceTime++; 
-
-					if(serviceBest > find->serviceTime) {serviceBest = find->serviceTime; serviceBestTime = storeClock; } 
-					if(serviceWorst < find->serviceTime) {serviceWorst = find->serviceTime; serviceWorstTime = storeClock; } 
-				}
-				else
-				{ 
-					//More than one customer 
-					find->next->waitTime++; 
-					find->next->serviceTime++; 
-					waitSum += find->next->waitTime; 
-
-					find->serviceTime++; 
-
-					if(serviceBest > find->serviceTime) {serviceBest = find->serviceTime; serviceBestTime = storeClock; } 
-					if(serviceWorst < find->serviceTime) {serviceWorst = find->serviceTime; serviceWorstTime = storeClock; } 
-
-					if(waitBest > find->next->waitTime) {waitBest = find->next->waitTime; waitBestTime = storeClock; } 
-					if(waitWorst < find->next->waitTime) {waitWorst = find->next->waitTime; waitWorstTime = storeClock; } 
-
-				}
-
 			}
+		} 
+		else {
+			if (customerArrives()) 
+			//Check if a customer will join the line
+			{
+				//Check if line is empty 
+				if (myStoreExtra.queueSize() == 0) 
+					emptyLine = true;
+				else
+					emptyLine = false;
+					myStoreExtra.enqueue();
+				if (myStoreExtra.queueSize() == 1) 
+					//If only one person is in line, take their order 
+					singleLine = true;
+				else
+					singleLine = false;
+			}
+
+			//If current order is done, customer can leave, or if no customers are in line, make an order 
+			if (orderTimeExtraDinner == 0) 
+			{
+				//If one person just joined an empty line and is the only one in line now 
+				if (emptyLine && singleLine) 
+				{							
+					orderTimeExtraDinner = myStoreExtra.placeOrder();  
+					customerCount++; 
+					orderTimeSum += orderTimeExtraDinner; 
+					
+					cout << "A customer has arrived in the previously empty second line with order time: " << orderTimeExtraDinner << " minutes at " << storeClock/60 << " hours" << endl; 
+				}
+				else
+				{ 
+					//The previous order is done and the next customer can step up 
+					myStoreExtra.dequeue(); 
+					orderTimeExtraDinner = rand() % 6 + 1; 
+					orderTimeSum += orderTimeExtraDinner; 
+					
+					cout << "Front customer has left and the following customer in second line now has an order time: " << orderTimeExtraDinner << " minutes at " << storeClock/60 << " hours" << endl; 
+				}	
+			}
+		}
+			storeClock++;
+			if(orderTime > 0) {
+				orderTime--; 
+				
+				Customer *find;
+				find = myStore.head; 
+
+				if (find == NULL) 
+				{
+					//No one in line 
+				}
+				else if (find->next == NULL) 
+				{
+					//One customer so no wait time 
+					find->serviceTime++; 
+
+					if(serviceBest > find->serviceTime) {serviceBest = find->serviceTime; serviceBestTime = storeClock; } 
+					if(serviceWorst < find->serviceTime) {serviceWorst = find->serviceTime; serviceWorstTime = storeClock; } 
+				}
+				else
+				{ 
+					//More than one customer 
+					find->next->waitTime++; 
+					find->next->serviceTime++; 
+					waitSum += find->next->waitTime; 
+
+					find->serviceTime++; 
+
+					if(serviceBest > find->serviceTime) {serviceBest = find->serviceTime; serviceBestTime = storeClock; } 
+					if(serviceWorst < find->serviceTime) {serviceWorst = find->serviceTime; serviceWorstTime = storeClock; } 
+
+					if(waitBest > find->next->waitTime) {waitBest = find->next->waitTime; waitBestTime = storeClock; } 
+					if(waitWorst < find->next->waitTime) {waitWorst = find->next->waitTime; waitWorstTime = storeClock; } 
+
+				}
 
 				if(queueBest > myStore.queueSize()) {
 					queueBest = myStore.queueSize(); 
@@ -855,6 +938,58 @@ int main()
 
 				queueSum += myStore.queueSize(); 
 				queueCount++; 
+
+			} 
+
+			if(orderTimeExtraDinner > 0) {
+				orderTimeExtraDinner--; 
+				
+				Customer *find;
+				find = myStoreExtra.head; 
+
+				if (find == NULL) 
+				{
+					//No one in line 
+				}
+				else if (find->next == NULL) 
+				{
+					//One customer so no wait time 
+					find->serviceTime++; 
+
+					if(serviceBest > find->serviceTime) {serviceBest = find->serviceTime; serviceBestTime = storeClock; } 
+					if(serviceWorst < find->serviceTime) {serviceWorst = find->serviceTime; serviceWorstTime = storeClock; } 
+				}
+				else
+				{ 
+					//More than one customer 
+					find->next->waitTime++; 
+					find->next->serviceTime++; 
+					waitSum += find->next->waitTime; 
+
+					find->serviceTime++; 
+
+					if(serviceBest > find->serviceTime) {serviceBest = find->serviceTime; serviceBestTime = storeClock; } 
+					if(serviceWorst < find->serviceTime) {serviceWorst = find->serviceTime; serviceWorstTime = storeClock; } 
+
+					if(waitBest > find->next->waitTime) {waitBest = find->next->waitTime; waitBestTime = storeClock; } 
+					if(waitWorst < find->next->waitTime) {waitWorst = find->next->waitTime; waitWorstTime = storeClock; } 
+
+				}
+
+				if(queueBest > myStoreExtra.queueSize()) {
+					queueBest = myStoreExtra.queueSize(); 
+					queueBestTime = storeClock; 
+				} 
+
+				if(queueWorst < myStoreExtra.queueSize()) {
+					queueWorst = myStoreExtra.queueSize(); 
+					queueWorstTime = storeClock; 
+				}
+
+				queueSum += myStoreExtra.queueSize(); 
+				queueCount++; 
+
+			}	
 		} 
 
 		while (storeClock < 1020 && storeClock > 720) 
