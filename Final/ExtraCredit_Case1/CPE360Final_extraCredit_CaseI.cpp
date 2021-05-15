@@ -155,7 +155,7 @@ bool customerArrives()
 int main()
 {
 	srand(time(NULL));
-	Queue myStore; //Regular line 
+	Queue myStore; 
 	
 		storeClock = orderTime = orderTimeSum = waitSum = waitAvg = serviceSum = serviceAvg = queueCount = queueSum = queueAvg = 0; 
 
