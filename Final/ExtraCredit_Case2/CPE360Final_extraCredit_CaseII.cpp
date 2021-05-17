@@ -350,18 +350,24 @@ int main()
 				else
 				{ 
 					//More than one customer 
-					find->next->waitTime++; 
-					find->next->serviceTime++; 
-					waitSum += find->next->waitTime; 
+					Customer *temp; 
+					temp = myStore.head;
+					temp->serviceTime++; 
 
-					find->serviceTime++; 
+					//Adds 1 minute to the wait time and service time of each customer in line
+      				while(temp->next != NULL) {
+					temp->next->waitTime++;  
+					temp->next->serviceTime++; 
 
-					if(serviceBest > find->serviceTime) {serviceBest = find->serviceTime; serviceBestTime = storeClock; } 
-					if(serviceWorst < find->serviceTime) {serviceWorst = find->serviceTime; serviceWorstTime = storeClock; } 
+					if(serviceBest > temp->next->serviceTime) {serviceBest = temp->next->serviceTime; serviceBestTime = storeClock; } 
+					if(serviceWorst < temp->next->serviceTime) {serviceWorst = temp->next->serviceTime; serviceWorstTime = storeClock; } 
 
-					if(waitBest > find->next->waitTime) {waitBest = find->next->waitTime; waitBestTime = storeClock; } 
-					if(waitWorst < find->next->waitTime) {waitWorst = find->next->waitTime; waitWorstTime = storeClock; } 
+					if(waitBest > temp->next->waitTime) {waitBest = temp->next->waitTime; waitBestTime = storeClock; } 
+					if(waitWorst < temp->next->waitTime) {waitWorst = temp->next->waitTime; waitWorstTime = storeClock; } 
 
+					temp = temp->next;
+      				}
+				waitSum += find->next->waitTime; 
 				}
 
 				if(queueBest > myStore.queueSize()) {
@@ -400,18 +406,24 @@ int main()
 				else
 				{ 
 					//More than one customer 
-					find->next->waitTime++; 
-					find->next->serviceTime++; 
-					waitSum += find->next->waitTime; 
+					Customer *temp; 
+					temp = myStoreExtra.head;
+					temp->serviceTime++; 
 
-					find->serviceTime++; 
+					//Adds 1 minute to the wait time and service time of each customer in line
+      				while(temp->next != NULL) {
+					temp->next->waitTime++;  
+					temp->next->serviceTime++; 
 
-					if(serviceBest > find->serviceTime) {serviceBest = find->serviceTime; serviceBestTime = storeClock; } 
-					if(serviceWorst < find->serviceTime) {serviceWorst = find->serviceTime; serviceWorstTime = storeClock; } 
+					if(serviceBest > temp->next->serviceTime) {serviceBest = temp->next->serviceTime; serviceBestTime = storeClock; } 
+					if(serviceWorst < temp->next->serviceTime) {serviceWorst = temp->next->serviceTime; serviceWorstTime = storeClock; } 
 
-					if(waitBest > find->next->waitTime) {waitBest = find->next->waitTime; waitBestTime = storeClock; } 
-					if(waitWorst < find->next->waitTime) {waitWorst = find->next->waitTime; waitWorstTime = storeClock; } 
+					if(waitBest > temp->next->waitTime) {waitBest = temp->next->waitTime; waitBestTime = storeClock; } 
+					if(waitWorst < temp->next->waitTime) {waitWorst = temp->next->waitTime; waitWorstTime = storeClock; } 
 
+					temp = temp->next;
+      				}
+				waitSum += find->next->waitTime; 
 				}
 
 				if(queueBest > myStoreExtra.queueSize()) {
@@ -497,18 +509,24 @@ int main()
 				else
 				{ 
 					//More than one customer 
-					find->next->waitTime++; 
-					find->next->serviceTime++; 
-					waitSum += find->next->waitTime; 
+					Customer *temp; 
+					temp = myStore.head;
+					temp->serviceTime++; 
 
-					find->serviceTime++; 
+					//Adds 1 minute to the wait time and service time of each customer in line
+      				while(temp->next != NULL) {
+					temp->next->waitTime++;  
+					temp->next->serviceTime++; 
 
-					if(serviceBest > find->serviceTime) {serviceBest = find->serviceTime; serviceBestTime = storeClock; } 
-					if(serviceWorst < find->serviceTime) {serviceWorst = find->serviceTime; serviceWorstTime = storeClock; } 
+					if(serviceBest > temp->next->serviceTime) {serviceBest = temp->next->serviceTime; serviceBestTime = storeClock; } 
+					if(serviceWorst < temp->next->serviceTime) {serviceWorst = temp->next->serviceTime; serviceWorstTime = storeClock; } 
 
-					if(waitBest > find->next->waitTime) {waitBest = find->next->waitTime; waitBestTime = storeClock; } 
-					if(waitWorst < find->next->waitTime) {waitWorst = find->next->waitTime; waitWorstTime = storeClock; } 
+					if(waitBest > temp->next->waitTime) {waitBest = temp->next->waitTime; waitBestTime = storeClock; } 
+					if(waitWorst < temp->next->waitTime) {waitWorst = temp->next->waitTime; waitWorstTime = storeClock; } 
 
+					temp = temp->next;
+      				}
+				waitSum += find->next->waitTime; 
 				}
 
 			}
@@ -633,18 +651,24 @@ int main()
 				else
 				{ 
 					//More than one customer 
-					find->next->waitTime++; 
-					find->next->serviceTime++; 
-					waitSum += find->next->waitTime; 
+					Customer *temp; 
+					temp = myStore.head;
+					temp->serviceTime++; 
 
-					find->serviceTime++; 
+					//Adds 1 minute to the wait time and service time of each customer in line
+      				while(temp->next != NULL) {
+					temp->next->waitTime++;  
+					temp->next->serviceTime++; 
 
-					if(serviceBest > find->serviceTime) {serviceBest = find->serviceTime; serviceBestTime = storeClock; } 
-					if(serviceWorst < find->serviceTime) {serviceWorst = find->serviceTime; serviceWorstTime = storeClock; } 
+					if(serviceBest > temp->next->serviceTime) {serviceBest = temp->next->serviceTime; serviceBestTime = storeClock; } 
+					if(serviceWorst < temp->next->serviceTime) {serviceWorst = temp->next->serviceTime; serviceWorstTime = storeClock; } 
 
-					if(waitBest > find->next->waitTime) {waitBest = find->next->waitTime; waitBestTime = storeClock; } 
-					if(waitWorst < find->next->waitTime) {waitWorst = find->next->waitTime; waitWorstTime = storeClock; } 
+					if(waitBest > temp->next->waitTime) {waitBest = temp->next->waitTime; waitBestTime = storeClock; } 
+					if(waitWorst < temp->next->waitTime) {waitWorst = temp->next->waitTime; waitWorstTime = storeClock; } 
 
+					temp = temp->next;
+      				}
+				waitSum += find->next->waitTime; 
 				}
 
 				if(queueBest > myStore.queueSize()) {
@@ -683,18 +707,24 @@ int main()
 				else
 				{ 
 					//More than one customer 
-					find->next->waitTime++; 
-					find->next->serviceTime++; 
-					waitSum += find->next->waitTime; 
+					Customer *temp; 
+					temp = myStoreExtra.head; 
+					temp->serviceTime++; 
 
-					find->serviceTime++; 
+					//Adds 1 minute to the wait time and service time of each customer in line
+      				while(temp->next != NULL) {
+					temp->next->waitTime++;  
+					temp->next->serviceTime++; 
 
-					if(serviceBest > find->serviceTime) {serviceBest = find->serviceTime; serviceBestTime = storeClock; } 
-					if(serviceWorst < find->serviceTime) {serviceWorst = find->serviceTime; serviceWorstTime = storeClock; } 
+					if(serviceBest > temp->next->serviceTime) {serviceBest = temp->next->serviceTime; serviceBestTime = storeClock; } 
+					if(serviceWorst < temp->next->serviceTime) {serviceWorst = temp->next->serviceTime; serviceWorstTime = storeClock; } 
 
-					if(waitBest > find->next->waitTime) {waitBest = find->next->waitTime; waitBestTime = storeClock; } 
-					if(waitWorst < find->next->waitTime) {waitWorst = find->next->waitTime; waitWorstTime = storeClock; } 
+					if(waitBest > temp->next->waitTime) {waitBest = temp->next->waitTime; waitBestTime = storeClock; } 
+					if(waitWorst < temp->next->waitTime) {waitWorst = temp->next->waitTime; waitWorstTime = storeClock; } 
 
+					temp = temp->next;
+      				}
+				waitSum += find->next->waitTime; 
 				}
 
 				if(queueBest > myStoreExtra.queueSize()) {
@@ -777,18 +807,24 @@ int main()
 				else
 				{ 
 					//More than one customer 
-					find->next->waitTime++; 
-					find->next->serviceTime++; 
-					waitSum += find->next->waitTime; 
+					Customer *temp; 
+					temp = myStore.head;
+					temp->serviceTime++; 
 
-					find->serviceTime++; 
+					//Adds 1 minute to the wait time and service time of each customer in line
+      				while(temp->next != NULL) {
+					temp->next->waitTime++;  
+					temp->next->serviceTime++; 
 
-					if(serviceBest > find->serviceTime) {serviceBest = find->serviceTime; serviceBestTime = storeClock; } 
-					if(serviceWorst < find->serviceTime) {serviceWorst = find->serviceTime; serviceWorstTime = storeClock; } 
+					if(serviceBest > temp->next->serviceTime) {serviceBest = temp->next->serviceTime; serviceBestTime = storeClock; } 
+					if(serviceWorst < temp->next->serviceTime) {serviceWorst = temp->next->serviceTime; serviceWorstTime = storeClock; } 
 
-					if(waitBest > find->next->waitTime) {waitBest = find->next->waitTime; waitBestTime = storeClock; } 
-					if(waitWorst < find->next->waitTime) {waitWorst = find->next->waitTime; waitWorstTime = storeClock; } 
+					if(waitBest > temp->next->waitTime) {waitBest = temp->next->waitTime; waitBestTime = storeClock; } 
+					if(waitWorst < temp->next->waitTime) {waitWorst = temp->next->waitTime; waitWorstTime = storeClock; } 
 
+					temp = temp->next;
+      				}
+				waitSum += find->next->waitTime; 
 				}
 
 			}
@@ -913,18 +949,24 @@ int main()
 				else
 				{ 
 					//More than one customer 
-					find->next->waitTime++; 
-					find->next->serviceTime++; 
-					waitSum += find->next->waitTime; 
+					Customer *temp; 
+					temp = myStore.head;
+					temp->serviceTime++; 
 
-					find->serviceTime++; 
+					//Adds 1 minute to the wait time and service time of each customer in line
+      				while(temp->next != NULL) {
+					temp->next->waitTime++;  
+					temp->next->serviceTime++; 
 
-					if(serviceBest > find->serviceTime) {serviceBest = find->serviceTime; serviceBestTime = storeClock; } 
-					if(serviceWorst < find->serviceTime) {serviceWorst = find->serviceTime; serviceWorstTime = storeClock; } 
+					if(serviceBest > temp->next->serviceTime) {serviceBest = temp->next->serviceTime; serviceBestTime = storeClock; } 
+					if(serviceWorst < temp->next->serviceTime) {serviceWorst = temp->next->serviceTime; serviceWorstTime = storeClock; } 
 
-					if(waitBest > find->next->waitTime) {waitBest = find->next->waitTime; waitBestTime = storeClock; } 
-					if(waitWorst < find->next->waitTime) {waitWorst = find->next->waitTime; waitWorstTime = storeClock; } 
+					if(waitBest > temp->next->waitTime) {waitBest = temp->next->waitTime; waitBestTime = storeClock; } 
+					if(waitWorst < temp->next->waitTime) {waitWorst = temp->next->waitTime; waitWorstTime = storeClock; } 
 
+					temp = temp->next;
+      				}
+				waitSum += find->next->waitTime; 
 				}
 
 				if(queueBest > myStore.queueSize()) {
@@ -963,18 +1005,24 @@ int main()
 				else
 				{ 
 					//More than one customer 
-					find->next->waitTime++; 
-					find->next->serviceTime++; 
-					waitSum += find->next->waitTime; 
+					Customer *temp; 
+					temp = myStoreExtra.head; 
+					temp->serviceTime++; 
 
-					find->serviceTime++; 
+					//Adds 1 minute to the wait time and service time of each customer in line
+      				while(temp->next != NULL) {
+					temp->next->waitTime++;  
+					temp->next->serviceTime++; 
 
-					if(serviceBest > find->serviceTime) {serviceBest = find->serviceTime; serviceBestTime = storeClock; } 
-					if(serviceWorst < find->serviceTime) {serviceWorst = find->serviceTime; serviceWorstTime = storeClock; } 
+					if(serviceBest > temp->next->serviceTime) {serviceBest = temp->next->serviceTime; serviceBestTime = storeClock; } 
+					if(serviceWorst < temp->next->serviceTime) {serviceWorst = temp->next->serviceTime; serviceWorstTime = storeClock; } 
 
-					if(waitBest > find->next->waitTime) {waitBest = find->next->waitTime; waitBestTime = storeClock; } 
-					if(waitWorst < find->next->waitTime) {waitWorst = find->next->waitTime; waitWorstTime = storeClock; } 
+					if(waitBest > temp->next->waitTime) {waitBest = temp->next->waitTime; waitBestTime = storeClock; } 
+					if(waitWorst < temp->next->waitTime) {waitWorst = temp->next->waitTime; waitWorstTime = storeClock; } 
 
+					temp = temp->next;
+      				}
+				waitSum += find->next->waitTime; 
 				}
 
 				if(queueBest > myStoreExtra.queueSize()) {
@@ -1057,18 +1105,24 @@ int main()
 				else
 				{ 
 					//More than one customer 
-					find->next->waitTime++; 
-					find->next->serviceTime++; 
-					waitSum += find->next->waitTime; 
+					Customer *temp; 
+					temp = myStore.head;
+					temp->serviceTime++; 
 
-					find->serviceTime++; 
+					//Adds 1 minute to the wait time and service time of each customer in line
+      				while(temp->next != NULL) {
+					temp->next->waitTime++;  
+					temp->next->serviceTime++; 
 
-					if(serviceBest > find->serviceTime) {serviceBest = find->serviceTime; serviceBestTime = storeClock; } 
-					if(serviceWorst < find->serviceTime) {serviceWorst = find->serviceTime; serviceWorstTime = storeClock; } 
+					if(serviceBest > temp->next->serviceTime) {serviceBest = temp->next->serviceTime; serviceBestTime = storeClock; } 
+					if(serviceWorst < temp->next->serviceTime) {serviceWorst = temp->next->serviceTime; serviceWorstTime = storeClock; } 
 
-					if(waitBest > find->next->waitTime) {waitBest = find->next->waitTime; waitBestTime = storeClock; } 
-					if(waitWorst < find->next->waitTime) {waitWorst = find->next->waitTime; waitWorstTime = storeClock; } 
+					if(waitBest > temp->next->waitTime) {waitBest = temp->next->waitTime; waitBestTime = storeClock; } 
+					if(waitWorst < temp->next->waitTime) {waitWorst = temp->next->waitTime; waitWorstTime = storeClock; } 
 
+					temp = temp->next;
+      				}
+				waitSum += find->next->waitTime; 
 				}
 
 			}
